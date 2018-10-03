@@ -11,7 +11,7 @@ RUN apt-get update -qq && apt-get install -y -q \
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y
 
 # Add AS Ubuntu repo
-udo sh -c 'echo "deb [trusted=yes] https://s3.amazonaws.com/autonomoustuff-repo/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/autonomoustuff-public.list'
+RUN echo "deb [trusted=yes] https://s3.amazonaws.com/autonomoustuff-repo/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/autonomoustuff-public.list
 
 # Install GCC-5 and AS Common
 RUN apt-get update -qq && apt-get install -y -q \

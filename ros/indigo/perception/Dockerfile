@@ -21,3 +21,6 @@ RUN apt-get update -qq && apt-get install -y -q \
 
 # Set as default
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+
+# Set up environment for libas-common
+RUN export CPATH="/usr/local/include/external:${CPATH}"

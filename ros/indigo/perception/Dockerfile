@@ -5,6 +5,8 @@ RUN apt-get update -qq && apt-get install -y -q \
     build-essential \
     cmake \
     apt-transport-https \
+    python-catkin-tools \
+    openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Add gcc repo

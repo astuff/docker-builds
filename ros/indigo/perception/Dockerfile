@@ -24,3 +24,6 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1 --slave /usr
 
 # Set up environment for libas-common
 RUN export CPATH="/usr/local/include/external:${CPATH}"
+
+# Add AS rosdep rules
+RUN echo "yaml https://s3.amazonaws.com/autonomoustuff-repo/autonomoustuff-public-$ROS_DISTRO.yaml $ROS_DISTRO" > /etc/ros/rosdep/sources.list.d/40-autonomoustuff-public-'$ROS_DISTRO'.list

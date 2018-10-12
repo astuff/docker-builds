@@ -1,3 +1,3 @@
-FROM atlassian/default-image:latest
+FROM ubuntu:xenial
 
-RUN apt-get update -qq && apt-get install -y gcc-arm-none-eabi
+RUN apt-get update -qq && apt-get install -y build-essential gcc-arm-none-eabi

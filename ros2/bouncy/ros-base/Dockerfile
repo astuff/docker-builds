@@ -6,7 +6,7 @@ RUN apt update -qq && apt install -y -q \
     apt-transport-https \
     python-rosdep \
     python3-colcon-common-extensions \
-    python3-pip
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up rosdep

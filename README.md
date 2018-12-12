@@ -2,7 +2,7 @@
 
 This repo contains Dockerfiles for use in automated builds on https://hub.docker.com. It contains at least the following:
 
-- ARM Cross-compilation Environment in Ubuntu 16.04
+- ARM (arm-gnueabi-none) Cross-compilation Environment in Ubuntu 16.04
 - ROS Indigo on Ubuntu 14.04
   - ros-base
   - robot

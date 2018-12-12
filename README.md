@@ -1,6 +1,6 @@
 # AutonomouStuff CI Docker Images #
 
-This repo contains Dockerfiles for use in automated builds on https://hub.docker.com. It contains at least the following:
+This repo contains Dockerfiles for use in automated builds on [https://hub.docker.com/r/autonomoustuff/docker-builds/](https://hub.docker.com/r/autonomoustuff/docker-builds/). It contains at least the following:
 
 - ARM (arm-gnueabi-none) Cross-compilation Environment in Ubuntu 16.04
 - ROS Indigo on Ubuntu 14.04

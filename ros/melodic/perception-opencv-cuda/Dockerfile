@@ -15,8 +15,7 @@ RUN wget https://github.com/opencv/opencv/archive/3.4.4.zip && \
     cd opencv-3.4.4 && \
     mkdir build && cd build && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local \
-          -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D WITH_TBB=ON \
-          -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON -D BUILD_EXAMPLES=ON \
-          -D WITHCUDA=ON -D ENABLE_CXX11=1 .. \
+          -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_QT=ON -D WITH_OPENGL=ON \
+          -D WITHCUDA=ON -D ENABLE_CXX11=1 .. && \
     make -j4 && \
     make install

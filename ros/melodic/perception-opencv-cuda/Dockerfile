@@ -1,6 +1,6 @@
 FROM autonomoustuff/docker-builds:melodic-perception
 
-RUN apt update -qq && apt install -y wget unzip
+RUN apt update -qq && apt install -y wget unzip python-numpy python3-numpy
 
 # Add CUDA Repo
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \

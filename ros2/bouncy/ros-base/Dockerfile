@@ -9,7 +9,5 @@ RUN apt update -qq && apt install -y -q \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up rosdep
-ENV ROSDISTRO_INDEX_URL "https://raw.githubusercontent.com/ros2/rosdistro/ros2/index-v4.yaml"
-
-RUN rosdep init && rosdep update
+# Update rosdep
+RUN rosdep update

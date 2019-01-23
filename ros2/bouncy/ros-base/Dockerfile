@@ -1,4 +1,4 @@
-FROM osrf/ros2:bouncy-ros-base
+FROM ros:bouncy-ros-base
 
 RUN apt update -qq && apt install -y -q \
     build-essential \

@@ -10,5 +10,4 @@ RUN apt update -qq && apt install -y -q \
     && rm -rf /var/lib/apt/lists/*
 
 # Update rosdep
-ENV ROSDISTRO_INDEX_URL "https://raw.githubusercontent.com/ros/rosdistro/master/index-v4.yaml"
 RUN rosdep update

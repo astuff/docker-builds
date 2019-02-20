@@ -5,6 +5,7 @@ RUN apt update -qq && apt install -y -q \
     cmake \
     apt-transport-https \
     python3-colcon-common-extensions \
+    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
 # Update rosdep

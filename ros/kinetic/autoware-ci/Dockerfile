@@ -106,3 +106,5 @@ RUN apt update -qq && apt install -y -q \
     ros-kinetic-visualization-msgs \
     ros-kinetic-xacro \
     v4l-utils
+
+RUN pip3 install -U setuptools

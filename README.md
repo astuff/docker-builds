@@ -3,15 +3,7 @@
 This repo contains Dockerfiles for use in automated builds on [https://hub.docker.com/r/autonomoustuff/docker-builds/](https://hub.docker.com/r/autonomoustuff/docker-builds/). It contains at least the following:
 
 - ARM (arm-gnueabi-none) Cross-compilation Environment in Ubuntu 16.04
-- ROS Indigo on Ubuntu 14.04
-  - ros-base
-  - robot
-  - perception
-- ROS Kinetic on Ubuntu 16.04
-  - ros-base
-  - robot
-  - perception
-- ROS Lunar on Ubuntu 16.04
+- ROS Kinetic on Ubuntu 14.04
   - ros-base
   - robot
   - perception
@@ -22,8 +14,12 @@ This repo contains Dockerfiles for use in automated builds on [https://hub.docke
 - ROS2 Bouncy on Ubuntu 18.04
   - ros-core
   - ros-base
-  - desktop
-  - full
+- ROS2 Crystal on Ubuntu 18.04
+  - ros-core
+  - ros-base
+- ROS2 Dashing on Ubuntu 18.04
+  - ros-core
+  - ros-base
 
 For definitions of the above ROS metapackages, see [REP-142](http://www.ros.org/reps/rep-0142.html).
 

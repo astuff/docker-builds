@@ -1,12 +1,12 @@
-ARG TARGET_ARCH
-FROM multiarch/alpine:${TARGET_ARCH}-latest-stable AS bootstrap
+ARG DEBIAN_ARCH
+FROM multiarch/alpine:${DEBIAN_ARCH}-latest-stable AS bootstrap
 
-FROM osrf/ubuntu_${TARGET_ARCH}:bionic AS sysroot
-ARG TARGET_ARCH_SHORT
+FROM osrf/ubuntu_${DEBIAN_ARCH}:bionic AS sysroot
+ARG GNU_ARCH
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-COPY --from=bootstrap /usr/bin/qemu-${TARGET_ARCH_SHORT}-static /usr/bin/qemu-${TARGET_ARCH_SHORT}-static
+COPY --from=bootstrap /usr/bin/qemu-${GNU_ARCH}-static /usr/bin/qemu-${GNU_ARCH}-static
 
 # ignore pinning package versions for apt
 # hadolint ignore=DL3008
@@ -35,14 +35,13 @@ RUN apt-get update && \
 RUN find / -depth -xdev -type l -lname '/*' -exec sh -c 'linkpath="$(readlink {})" && rm -f {} && ln -frsv "$linkpath" "{}"' \;
 
 FROM ros:dashing-ros-core AS builder
-ARG TARGET_ARCH
-ARG TARGET_ARCH_SHORT
-ARG TARGET_ARCH_GNU_NAME
-ARG TARGET_PLATFORM=${TARGET_ARCH}-generic
+ARG DEBIAN_ARCH
+ARG GNU_ABI
+ARG GNU_ARCH
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-ENV SYSROOT_FOLDER /sysroot/${TARGET_PLATFORM}
+ENV SYSROOT_FOLDER /sysroot/${GNU_ARCH}-generic
 COPY --from=sysroot /lib ${SYSROOT_FOLDER}/lib
 COPY --from=sysroot /usr/include ${SYSROOT_FOLDER}/usr/include
 COPY --from=sysroot /usr/lib ${SYSROOT_FOLDER}/usr/lib
@@ -55,7 +54,8 @@ COPY --from=sysroot /etc/alternatives ${SYSROOT_FOLDER}/etc/alternatives
 # hadolint ignore=DL3008
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     tzdata \
-    gnupg && \
+    gnupg \
+    crossbuild-essential-${DEBIAN_ARCH} && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./cross-dependencies /tmp/cross-dependencies
@@ -73,7 +73,7 @@ RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec 
 RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib#${SYSROOT_FOLDER}/usr/lib#g" {} \;
 RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/lib/pkgconfig/ -name "*.pc" -type f -exec sed -i -e "s#-I/opt/ros/dashing/usr/include#-I${SYSROOT_FOLDER}/opt/ros/dashing/usr/include#g" {} \;
 RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/lib/pkgconfig/ -name "*.pc" -type f -exec sed -i -e "s#-I/usr/include#-I${SYSROOT_FOLDER}/usr/include#g" {} \;
-RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib/${TARGET_ARCH}-linux-gnu#${SYSROOT_FOLDER}/usr/lib/${TARGET_ARCH}-linux-gnu#g" {} \;
+RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib/${DEBIAN_ARCH}-linux-gnu#${SYSROOT_FOLDER}/usr/lib/${DEBIAN_ARCH}-linux-gnu#g" {} \;
 RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib/openmpi#${SYSROOT_FOLDER}/usr/lib/openmpi#g" {} \;
 RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/include#${SYSROOT_FOLDER}/usr/include#g" {} \;
 RUN find ${SYSROOT_FOLDER}/ -name "*.pc" -type f -exec sed -i -e "s#prefix=/#prefix=${SYSROOT_FOLDER}/#g" {} \;
@@ -81,10 +81,10 @@ RUN find ${SYSROOT_FOLDER}/ -name "*.pc" -type f -exec sed -i -e "s#prefix=/#pre
 COPY ./cross_toolchain.cmake /root/cross_toolchain.cmake
 
 ENV ROS_DISTRO dashing
-ENV SYSTEM_PROCESSOR $TARGET_ARCH_SHORT
-ENV CC /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-gcc
-ENV CXX /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-g++
-ENV AR /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-ar
-ENV CPP /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-cpp
+ENV SYSTEM_PROCESSOR $GNU_ARCH
+ENV CC /usr/bin/${GNU_ARCH}-linux-${GNU_ABI}-gcc
+ENV CXX /usr/bin/${GNU_ARCH}-linux-${GNU_ABI}-g++
+ENV AR /usr/bin/${GNU_ARCH}-linux-${GNU_ABI}-ar
+ENV CPP /usr/bin/${GNU_ARCH}-linux-${GNU_ABI}-cpp
 
 CMD [". /opt/ros/dashing/setup.sh && /bin/bash"]

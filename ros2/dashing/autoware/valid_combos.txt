@@ -1,0 +1,2 @@
+DEBIAN_ARCH=arm64 GNU_ARCH=aarch64 GNU_ABI=gnu
+DEBIAN_ARCH=armhf GNU_ARCH=arm GNU_ABI=gnueabihf

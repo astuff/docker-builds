@@ -1,4 +1,3 @@
-crossbuild-essential-armhf
 curl
 cython
 git

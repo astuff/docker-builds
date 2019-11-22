@@ -1,4 +1,5 @@
 crossbuild-essential-armhf
+curl
 cython
 git
 mercurial
@@ -12,3 +13,4 @@ python3-vcstool
 qt5-qmake
 qtbase5-dev-tools
 subversion
+wget

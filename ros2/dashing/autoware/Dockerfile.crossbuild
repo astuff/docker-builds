@@ -78,6 +78,8 @@ RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -
 RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/include#${SYSROOT_FOLDER}/usr/include#g" {} \;
 RUN find ${SYSROOT_FOLDER}/ -name "*.pc" -type f -exec sed -i -e "s#prefix=/#prefix=${SYSROOT_FOLDER}/#g" {} \;
 
+COPY ./cross_toolchain.cmake /root/cross_toolchain.cmake
+
 ENV ROS_DISTRO dashing
 ENV SYSTEM_PROCESSOR $TARGET_ARCH_SHORT
 ENV CC /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-gcc

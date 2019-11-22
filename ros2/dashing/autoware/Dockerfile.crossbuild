@@ -1,0 +1,88 @@
+ARG TARGET_ARCH
+FROM multiarch/alpine:${TARGET_ARCH}-latest-stable AS bootstrap
+
+FROM osrf/ubuntu_${TARGET_ARCH}:bionic AS sysroot
+ARG TARGET_ARCH_SHORT
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+COPY --from=bootstrap /usr/bin/qemu-${TARGET_ARCH_SHORT}-static /usr/bin/qemu-${TARGET_ARCH_SHORT}-static
+
+# ignore pinning package versions for apt
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    lsb-release \
+    sudo \
+    gnupg \
+    wget
+
+# Add ROS Repository
+ENV DEBIAN_FRONTEND noninteractive
+RUN for i in 1 2 3; do apt-get update && apt-get install -q -y locales && apt-get clean && break || if [ $i -lt 3 ]; then sleep 5; else false; fi; done
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
+    locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+RUN wget --no-check-certificate https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc && apt-key add ros.asc
+RUN sh -c 'echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list'
+
+# Install dependent packages used by Autoware
+COPY ./dependencies /tmp/dependencies
+RUN apt-get update && \
+    sed "s/\$ROS_DISTRO/dashing/g" "/tmp/dependencies" | xargs apt-get install -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+# hadolint ignore=SC2156
+RUN find / -depth -xdev -type l -lname '/*' -exec sh -c 'linkpath="$(readlink {})" && rm -f {} && ln -frsv "$linkpath" "{}"' \;
+
+FROM ros:dashing-ros-core AS builder
+ARG TARGET_ARCH
+ARG TARGET_ARCH_SHORT
+ARG TARGET_ARCH_GNU_NAME
+ARG TARGET_PLATFORM=${TARGET_ARCH}-generic
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ENV SYSROOT_FOLDER /sysroot/${TARGET_PLATFORM}
+COPY --from=sysroot /lib ${SYSROOT_FOLDER}/lib
+COPY --from=sysroot /usr/include ${SYSROOT_FOLDER}/usr/include
+COPY --from=sysroot /usr/lib ${SYSROOT_FOLDER}/usr/lib
+COPY --from=sysroot /usr/share/pkgconfig ${SYSROOT_FOLDER}/usr/share/pkgconfig
+COPY --from=sysroot /opt ${SYSROOT_FOLDER}/opt
+COPY --from=sysroot /etc/alternatives ${SYSROOT_FOLDER}/etc/alternatives
+
+# Fix Bionic-specific issues
+# ignore pinning package versions for apt
+# hadolint ignore=DL3008
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    tzdata \
+    gnupg && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY ./cross-dependencies /tmp/cross-dependencies
+# ignore pinning package versions for apt and pip
+# hadolint ignore=DL3008,DL3013
+RUN apt-get update && \
+    sed "s/\$ROS_DISTRO/dashing/g" "/tmp/cross-dependencies" | xargs apt-get install -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip3 install -U setuptools
+
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec sed -i -e "s#/opt/ros/dashing/include#${SYSROOT_FOLDER}/opt/ros/dashing/include#g" {} \;
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec sed -i -e "s#/opt/ros/dashing/lib#${SYSROOT_FOLDER}/opt/ros/dashing/lib#g" {} \;
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec sed -i -e "s#/opt/ros/dashing/share#${SYSROOT_FOLDER}/opt/ros/dashing/share#g" {} \;
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/include#${SYSROOT_FOLDER}/usr/include#g" {} \;
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/share/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib#${SYSROOT_FOLDER}/usr/lib#g" {} \;
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/lib/pkgconfig/ -name "*.pc" -type f -exec sed -i -e "s#-I/opt/ros/dashing/usr/include#-I${SYSROOT_FOLDER}/opt/ros/dashing/usr/include#g" {} \;
+RUN find ${SYSROOT_FOLDER}/opt/ros/dashing/lib/pkgconfig/ -name "*.pc" -type f -exec sed -i -e "s#-I/usr/include#-I${SYSROOT_FOLDER}/usr/include#g" {} \;
+RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib/${TARGET_ARCH}-linux-gnu#${SYSROOT_FOLDER}/usr/lib/${TARGET_ARCH}-linux-gnu#g" {} \;
+RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/lib/openmpi#${SYSROOT_FOLDER}/usr/lib/openmpi#g" {} \;
+RUN find ${SYSROOT_FOLDER}/usr/lib/cmake/ -name "*.cmake" -type f -exec sed -i -e "s#/usr/include#${SYSROOT_FOLDER}/usr/include#g" {} \;
+RUN find ${SYSROOT_FOLDER}/ -name "*.pc" -type f -exec sed -i -e "s#prefix=/#prefix=${SYSROOT_FOLDER}/#g" {} \;
+
+ENV ROS_DISTRO dashing
+ENV SYSTEM_PROCESSOR $TARGET_ARCH_SHORT
+ENV CC /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-gcc
+ENV CXX /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-g++
+ENV AR /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-ar
+ENV CPP /usr/bin/${TARGET_ARCH_SHORT}-linux-${TARGET_ARCH_GNU_NAME}-cpp
+
+CMD [". /opt/ros/dashing/setup.sh && /bin/bash"]

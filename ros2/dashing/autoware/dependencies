@@ -1,0 +1,11 @@
+can-utils
+curl
+freeglut3-dev
+gcovr
+lcov
+libeigen3-dev
+ros-$ROS_DISTRO-ament-cmake-pclint
+ros-$ROS_DISTRO-udp-driver
+ros-$ROS_DISTRO-osrf-testing-tools-cpp
+ros-$ROS_DISTRO-tf2-sensor-msgs
+v4l-utils

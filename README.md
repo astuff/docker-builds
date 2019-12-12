@@ -20,6 +20,9 @@ This repo contains Dockerfiles for use in automated builds on [https://hub.docke
 - ROS2 Dashing on Ubuntu 18.04
   - ros-core
   - ros-base
+- Ubuntu images for CI testing purposes
+  - [xenial-non-root](https://github.com/astuff/docker-builds/blob/master/ubuntu/xenial-non-root/Dockerfile)
+  - [bionic-non-root](https://github.com/astuff/docker-builds/blob/master/ubuntu/bionic-non-root/Dockerfile)
 
 For definitions of the above ROS metapackages, see [REP-142](http://www.ros.org/reps/rep-0142.html).
 

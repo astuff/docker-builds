@@ -6,6 +6,8 @@ RUN apt update -qq && apt install -y -q \
     apt-transport-https \
     python3-colcon-common-extensions \
     software-properties-common \
+    openssh-client \
+    gnupg2 \
     && rm -rf /var/lib/apt/lists/*
 
 # Update rosdep

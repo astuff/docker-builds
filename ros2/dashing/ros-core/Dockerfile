@@ -15,7 +15,8 @@ RUN echo "deb [trusted=yes] https://s3.amazonaws.com/autonomoustuff-repo/ $(lsb_
 
 # Install AS Common
 RUN apt-get update -qq && apt-get install -y -q \
-    libas-common
+    libas-common \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set up environment for libas-common
 ENV CPATH "/usr/local/include/external:${CPATH}"

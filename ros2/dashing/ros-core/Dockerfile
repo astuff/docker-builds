@@ -21,5 +21,8 @@ RUN apt-get update -qq && apt-get install -y -q \
 # Set up environment for libas-common
 ENV CPATH "/usr/local/include/external:${CPATH}"
 
+# Add AS rosdep rules
+RUN echo "yaml https://s3.amazonaws.com/autonomoustuff-repo/autonomoustuff-public-$ROS_DISTRO.yaml $ROS_DISTRO" > /etc/ros/rosdep/sources.list.d/40-autonomoustuff-public-'$ROS_DISTRO'.list
+
 # Update rosdep
 RUN rosdep update

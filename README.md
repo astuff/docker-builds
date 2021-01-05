@@ -52,3 +52,4 @@ The following images are mostly used for CI testing purposes.
 ARM (arm-gnueabi-none) Cross-compilation Environment in Ubuntu 16.04
 - `xenial-non-root`
 - `bionic-non-root`
+- `focal-non-root`

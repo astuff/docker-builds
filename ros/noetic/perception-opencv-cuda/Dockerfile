@@ -1,13 +1,13 @@
 FROM autonomoustuff/docker-builds:noetic-perception
 
-RUN apt update -qq && apt install -y wget unzip python3-numpy
+RUN apt-get update -qq && apt-get install -y wget unzip python-numpy python3-numpy
 
 # Add CUDA Repo
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
     echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list
 
 # Install CUDA
-RUN apt update -qq && DEBIAN_FRONTEND=noninteractive apt install -y cuda
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y cuda
 
 # Build and Install OpenCV 3.4.4
 RUN wget https://github.com/opencv/opencv/archive/3.4.4.zip && \

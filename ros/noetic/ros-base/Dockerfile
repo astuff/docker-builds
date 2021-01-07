@@ -5,6 +5,7 @@ RUN apt-get update -qq && apt-get install -y -q \
     build-essential \
     cmake \
     apt-transport-https \
+    python3-osrf-pycommon \
     python3-catkin-tools \
     openssh-client \
     && rm -rf /var/lib/apt/lists/*

@@ -1,6 +1,6 @@
 FROM autonomoustuff/docker-builds:noetic-perception
 
-RUN apt-get update -qq && apt-get install -y wget unzip python-numpy python3-numpy
+RUN apt-get update -qq && apt-get install -y wget unzip python-numpy python3-numpy git
 
 # Add CUDA Repo
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \

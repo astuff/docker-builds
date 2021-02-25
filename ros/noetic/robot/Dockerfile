@@ -8,6 +8,7 @@ RUN apt-get update -qq && apt-get install -y -q \
     python3-osrf-pycommon \
     python3-catkin-tools \
     openssh-client \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Add AS Ubuntu repo

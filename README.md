@@ -42,6 +42,9 @@ The base ROS2 images with AutonomouStuff-related sources/dependencies installed.
 - `dashing-ros-core`
 - `dashing-ros-base`
 
+#### ROS2 Foxy on Ubuntu Ubuntu 20.04
+- `foxy-ros-core`
+- `foxy-ros-base`
 
 For definitions of the above ROS2 metapackages, see [REP-150](http://www.ros.org/reps/rep-0150.html).
 

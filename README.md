@@ -42,9 +42,13 @@ The base ROS2 images with AutonomouStuff-related sources/dependencies installed.
 - `dashing-ros-core`
 - `dashing-ros-base`
 
-#### ROS2 Foxy on Ubuntu Ubuntu 20.04
+#### ROS2 Foxy on Ubuntu 20.04
 - `foxy-ros-core`
 - `foxy-ros-base`
+
+#### ROS2 Humble on Ubuntu 22.04
+- `humble-ros-core`
+- `humble-ros-base`
 
 For definitions of the above ROS2 metapackages, see [REP-150](http://www.ros.org/reps/rep-0150.html).
 
@@ -56,3 +60,4 @@ ARM (arm-gnueabi-none) Cross-compilation Environment in Ubuntu 16.04
 - `xenial-non-root`
 - `bionic-non-root`
 - `focal-non-root`
+- `jammy-non-root`
